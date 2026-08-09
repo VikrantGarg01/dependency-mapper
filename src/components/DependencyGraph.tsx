@@ -84,9 +84,10 @@ function CustomNode({ data, id }: any) {
     window.location.reload()
   }
 
-  let borderColor = 'border-gray-300'
+    let borderColor = 'border-gray-300'
   let bgColor = 'bg-white'
   let statusEmoji = '🟢'
+  let textColor = 'text-gray-900' // Add this
   
   if (data.status === 'down') {
     borderColor = 'border-red-500 border-2'
@@ -96,6 +97,10 @@ function CustomNode({ data, id }: any) {
     borderColor = 'border-yellow-500 border-2'
     bgColor = 'bg-yellow-50'
     statusEmoji = '🟡'
+  } else if (data.status === 'healthy' || !data.status) {
+    // Ensure healthy status shows
+    statusEmoji = '🟢'
+    textColor = 'text-gray-900'
   }
 
   if (data.isAffected) {
@@ -120,8 +125,8 @@ function CustomNode({ data, id }: any) {
       
       <div className={`${bgColor} ${borderColor} rounded-lg px-4 py-3 min-w-[160px] text-center font-medium shadow-sm transition-all`}>
         <div className="flex items-center justify-center gap-2">
-          <span>{statusEmoji}</span>
-          <span>{data.label}</span>
+          <span className={textColor}>{statusEmoji}</span>
+          <span className={textColor}>{data.label}</span>
         </div>
       </div>
 
@@ -148,7 +153,7 @@ function CustomNode({ data, id }: any) {
             className="px-2 py-1 text-xs rounded hover:bg-green-50"
             title="Set Healthy"
           >
-            
+            🟢
           </button>
           <button 
             onClick={() => handleStatusChange('degraded')}
