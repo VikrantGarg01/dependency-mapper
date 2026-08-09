@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
-import { Toaster } from "react-hot-toast"; // <-- Added this
+import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,14 +25,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider 
-      afterSignInUrl="/dashboard" 
-      afterSignUpUrl="/dashboard"
-    >
+    <ClerkProvider> {/* <-- Removed the props here */}
       <html lang="en">
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
           {children}
-          {/* Toast Notifications will appear here */}
           <Toaster 
             position="top-center" 
             toastOptions={{

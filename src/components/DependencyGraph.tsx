@@ -22,10 +22,10 @@ import toast from 'react-hot-toast'
 interface Service {
   id: string
   name: string
-  description?: string
-  status?: string
-  positionX?: number
-  positionY?: number
+  description?: string | null       // <-- Added | null
+  status?: string | null            // <-- Added | null
+  positionX?: number | null         // <-- Added | null
+  positionY?: number | null         // <-- Added | null
 }
 
 interface Dependency {
