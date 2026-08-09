@@ -1,10 +1,10 @@
 import { auth } from '@clerk/nextjs/server'
-import { SignOutButton } from '@clerk/nextjs'  // <-- Add this import
+import { SignOutButton } from '@clerk/nextjs'
 import { prisma } from '@/lib/prisma'
 import { notFound } from 'next/navigation'
 import CreateServiceForm from '@/components/CreateServiceForm'
 import CreateDependencyForm from '@/components/CreateDependencyForm'
-import ProjectGraph from '@/components/ProjectGraph'
+import DependencyGraph from '@/components/DependencyGraph'
 import ExportButton from '@/components/ExportButton'
 
 export default async function ProjectPage({ params }: { params: Promise<{ projectId: string }> }) {
@@ -35,8 +35,6 @@ export default async function ProjectPage({ params }: { params: Promise<{ projec
     }
   })
 
-  // ... (top of the file remains the same)
-
   if (!project) notFound()
 
   return (
@@ -48,28 +46,23 @@ export default async function ProjectPage({ params }: { params: Promise<{ projec
         </div>
         <div className="flex gap-2 items-center">
           <ExportButton projectId={project.id} />
-          
-          {/* ADD "as any" HERE 👇 */}
           <CreateDependencyForm projectId={project.id} services={project.services as any} />
-          
           <CreateServiceForm projectId={project.id} />
+          <SignOutButton />
         </div>
       </header>
       
       <main className="flex-1 p-6">
         <div className="bg-white border rounded-lg overflow-hidden">
-          
-          {/* ADD "as any" HERE 👇 */}
-          <DependencyGraph 
-            services={project.services as any} 
+          <DependencyGraph
+            services={project.services as any}
             dependencies={project.dependencies as any}
             projectId={project.id}
-            selectedNodeId={null} 
-            onNodeSelect={() => {}} 
-            simulationMode={false} 
+            selectedNodeId={null}
+            onNodeSelect={() => {}}
+            simulationMode={false}
           />
-          
-        </div>
+        </div>  
       </main>
     </div>
   )
