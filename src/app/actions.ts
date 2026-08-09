@@ -68,23 +68,46 @@ export async function createService(formData: FormData) {
 
 export async function createDependency(formData: FormData) {
   const { userId } = await auth()
-  if (!userId) throw new Error('Unauthorized')
+  if (!userId) return { error: 'Unauthorized' }
 
   const projectId = formData.get('projectId') as string
   const sourceServiceId = formData.get('sourceServiceId') as string
   const targetServiceId = formData.get('targetServiceId') as string
-  const dependencyType = formData.get('dependencyType') as string || 'hard'
+  const dependencyType = (formData.get('dependencyType') as string) || 'hard'
 
-  await prisma.dependency.create({
-    data: {
-      projectId,
-      sourceServiceId,
-      targetServiceId,
-      dependencyType,
-    },
-  })
+  if (!projectId || !sourceServiceId || !targetServiceId) {
+    return { error: 'Missing required fields' }
+  }
 
-  revalidatePath(`/dashboard/projects/${projectId}`)
+  try {
+    // Verify project ownership first
+    const dbUser = await prisma.user.findUnique({ where: { clerkId: userId } })
+    if (!dbUser) return { error: 'User not found' }
+
+    const project = await prisma.project.findUnique({
+      where: { id: projectId, userId: dbUser.id }
+    })
+    if (!project) return { error: 'Project not found' }
+
+    // Create the dependency
+    await prisma.dependency.create({
+      data: {
+        projectId,
+        sourceServiceId,
+        targetServiceId,
+        dependencyType,
+      }
+    })
+    
+    // Revalidate the specific project page
+    revalidatePath(`/dashboard/projects/${projectId}`)
+    
+    return { success: true }
+  } catch (error) {
+    console.error('Prisma create dependency error:', error)
+    // Catch duplicate key errors or other DB issues gracefully
+    return { error: 'Failed to create dependency. It might already exist.' }
+  }
 }
 
 export async function deleteService(serviceId: string, projectId: string) {
