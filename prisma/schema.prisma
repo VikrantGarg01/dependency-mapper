@@ -1,0 +1,68 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(cuid())
+  clerkId   String    @unique
+  email     String    @unique
+  name      String?
+  projects  Project[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Project {
+  id           String       @id @default(cuid())
+  userId       String
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name         String
+  description  String?
+  services     Service[]
+  dependencies Dependency[]
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  @@index([userId])
+}
+
+model Service {
+  id          String       @id @default(cuid())
+  projectId   String
+  project     Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  serviceType String       @default("service")
+  teamOwner   String?
+  status      String       @default("healthy")
+  positionX   Float        @default(0)
+  positionY   Float        @default(0)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  sourceOf    Dependency[] @relation("SourceService")
+  targetOf    Dependency[] @relation("TargetService")
+
+  @@index([projectId])
+}
+
+model Dependency {
+  id              String   @id @default(cuid())
+  projectId       String
+  project         Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  sourceServiceId String
+  sourceService   Service  @relation("SourceService", fields: [sourceServiceId], references: [id], onDelete: Cascade)
+  targetServiceId String
+  targetService   Service  @relation("TargetService", fields: [targetServiceId], references: [id], onDelete: Cascade)
+  dependencyType  String   @default("hard")
+  createdAt       DateTime @default(now())
+
+  @@unique([sourceServiceId, targetServiceId])
+  @@index([projectId])
+  @@index([sourceServiceId])
+  @@index([targetServiceId])
+}
