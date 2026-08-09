@@ -4,8 +4,8 @@ import { prisma } from '@/lib/prisma'
 import { notFound } from 'next/navigation'
 import CreateServiceForm from '@/components/CreateServiceForm'
 import CreateDependencyForm from '@/components/CreateDependencyForm'
-import DependencyGraph from '@/components/DependencyGraph'
 import ExportButton from '@/components/ExportButton'
+import ProjectGraphWrapper from '@/components/ProjectGraphWrapper'  // <-- Change this import
 
 export default async function ProjectPage({ params }: { params: Promise<{ projectId: string }> }) {
   const { userId } = await auth()
@@ -54,13 +54,11 @@ export default async function ProjectPage({ params }: { params: Promise<{ projec
       
       <main className="flex-1 p-6">
         <div className="bg-white border rounded-lg overflow-hidden">
-          <DependencyGraph
+          {/* Use the wrapper instead of DependencyGraph directly */}
+          <ProjectGraphWrapper
             services={project.services as any}
             dependencies={project.dependencies as any}
             projectId={project.id}
-            selectedNodeId={null}
-            onNodeSelect={() => {}}
-            simulationMode={false}
           />
         </div>  
       </main>
