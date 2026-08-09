@@ -14,14 +14,18 @@ export default async function DashboardPage() {
 
   if (!dbUser) redirect('/signin')
 
+  // ADDED: include services and dependencies to fix TypeScript errors
   const projects = await prisma.project.findMany({
     where: { userId: dbUser.id },
-    orderBy: { updatedAt: 'desc' }
+    orderBy: { updatedAt: 'desc' },
+    include: {
+      services: true,
+      dependencies: true,
+    }
   })
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
-      {/* Header */}
       <header className="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
           <div className="flex items-center gap-3">
@@ -41,9 +45,7 @@ export default async function DashboardPage() {
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="max-w-7xl mx-auto px-6 py-8">
-        {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
             <div className="flex items-center justify-between mb-4">
@@ -86,7 +88,6 @@ export default async function DashboardPage() {
           </div>
         </div>
 
-        {/* Projects Grid */}
         <div className="mb-6">
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Your Projects</h2>
           <p className="text-gray-600">Click on a project to view its dependency graph</p>
@@ -106,11 +107,7 @@ export default async function DashboardPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {projects.map((project) => (
-              <Link 
-                key={project.id} 
-                href={`/dashboard/projects/${project.id}`}
-                className="group"
-              >
+              <Link key={project.id} href={`/dashboard/projects/${project.id}`} className="group">
                 <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 h-full">
                   <div className="flex items-start justify-between mb-4">
                     <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
