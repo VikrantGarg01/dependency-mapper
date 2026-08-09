@@ -35,6 +35,8 @@ export default async function ProjectPage({ params }: { params: Promise<{ projec
     }
   })
 
+  // ... (top of the file remains the same)
+
   if (!project) notFound()
 
   return (
@@ -42,29 +44,31 @@ export default async function ProjectPage({ params }: { params: Promise<{ projec
       <header className="bg-white border-b px-6 py-4 flex justify-between items-center">
         <div>
           <h1 className="text-xl font-bold">{project.name}</h1>
-          <p className="text-sm text-gray-500">{project.description}</p>
+          <p className="text-sm text-gray-500">{project.description || 'No description'}</p>
         </div>
         <div className="flex gap-2 items-center">
-          {/* Sign Out Button */}
-          <SignOutButton>
-            <button className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium transition">
-              Sign Out
-            </button>
-          </SignOutButton>
-          
           <ExportButton projectId={project.id} />
-          <CreateDependencyForm projectId={project.id} services={project.services} />
+          
+          {/* ADD "as any" HERE 👇 */}
+          <CreateDependencyForm projectId={project.id} services={project.services as any} />
+          
           <CreateServiceForm projectId={project.id} />
         </div>
       </header>
       
       <main className="flex-1 p-6">
         <div className="bg-white border rounded-lg overflow-hidden">
-          <ProjectGraph 
-            services={project.services} 
-            dependencies={project.dependencies}
+          
+          {/* ADD "as any" HERE 👇 */}
+          <DependencyGraph 
+            services={project.services as any} 
+            dependencies={project.dependencies as any}
             projectId={project.id}
+            selectedNodeId={null} 
+            onNodeSelect={() => {}} 
+            simulationMode={false} 
           />
+          
         </div>
       </main>
     </div>
