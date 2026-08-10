@@ -45,13 +45,17 @@ export default async function ProjectPage({ params }: { params: Promise<{ projec
   const softDeps = project.dependencies.filter(d => d.dependencyType === 'soft').length
 
   return (
-    // Added dark mode gradient background
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-950 dark:via-gray-900 dark:to-slate-900 flex flex-col transition-colors duration-300">
       
-      {/* Modern Header with dark mode support */}
-      <header className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 sticky top-0 z-40 shadow-sm">
-        <div className="px-6 py-5">
+      {/* 
+        PRO FIX: The header tag NO LONGER has backdrop-blur. 
+        This prevents it from trapping the fixed modals inside it!
+      */}
+      <header className="sticky top-0 z-40 shadow-sm border-b border-gray-200 dark:border-gray-800">
+        {/* The glass effect is applied to this inner div instead */}
+        <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md px-6 py-5">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            
             {/* Project Info */}
             <div className="flex items-center gap-4">
               <div className="w-14 h-14 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 rounded-2xl flex items-center justify-center shadow-lg">
@@ -67,7 +71,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ projec
               </div>
             </div>
 
-            {/* Action Buttons (Forms removed from here to prevent CSS trapping) */}
+            {/* Action Buttons - PUT BACK IN HEADER! */}
             <div className="flex flex-wrap items-center gap-3">
               <ThemeToggle /> 
               
@@ -77,6 +81,10 @@ export default async function ProjectPage({ params }: { params: Promise<{ projec
                 </svg>
                 <ExportButton projectId={project.id} />
               </button>
+
+              {/* Forms are back here! */}
+              <CreateDependencyForm projectId={project.id} services={project.services as any} />
+              <CreateServiceForm projectId={project.id} />
               
               <div className="h-8 w-px bg-gray-300 dark:bg-gray-700 mx-2 hidden sm:block"></div>
               
@@ -86,11 +94,9 @@ export default async function ProjectPage({ params }: { params: Promise<{ projec
         </div>
       </header>
 
-      {/* Stats Cards with dark mode support */}
+      {/* Stats Cards */}
       <div className="px-6 py-6">
         <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4">
-          
-          {/* Total Services */}
           <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl p-5 shadow-lg border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-shadow">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
@@ -103,7 +109,6 @@ export default async function ProjectPage({ params }: { params: Promise<{ projec
             <p className="text-sm text-gray-600 dark:text-gray-400 font-medium">Total Services</p>
           </div>
 
-          {/* Dependencies */}
           <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl p-5 shadow-lg border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-shadow">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center">
@@ -116,7 +121,6 @@ export default async function ProjectPage({ params }: { params: Promise<{ projec
             <p className="text-sm text-gray-600 dark:text-gray-400 font-medium">Dependencies</p>
           </div>
 
-          {/* Hard Dependencies */}
           <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl p-5 shadow-lg border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-shadow">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-10 h-10 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center">
@@ -129,7 +133,6 @@ export default async function ProjectPage({ params }: { params: Promise<{ projec
             <p className="text-sm text-gray-600 dark:text-gray-400 font-medium">Hard Dependencies</p>
           </div>
 
-          {/* Soft Dependencies */}
           <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl p-5 shadow-lg border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-shadow">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center">
@@ -141,11 +144,10 @@ export default async function ProjectPage({ params }: { params: Promise<{ projec
             </div>
             <p className="text-sm text-gray-600 dark:text-gray-400 font-medium">Soft Dependencies</p>
           </div>
-
         </div>
       </div>
 
-      {/* Graph Container with dark mode support */}
+      {/* Graph Container */}
       <main className="flex-1 px-6 pb-6">
         <div className="max-w-7xl mx-auto h-full">
           <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-800 overflow-hidden h-[calc(100vh-350px)] min-h-[500px]">
@@ -159,11 +161,6 @@ export default async function ProjectPage({ params }: { params: Promise<{ projec
           </div>
         </div>
       </main>
-
-      {/* Forms placed at the root level so they aren't trapped by the header's backdrop-blur */}
-      <CreateDependencyForm projectId={project.id} services={project.services as any} />
-      <CreateServiceForm projectId={project.id} />
-
     </div>
   )
 }
