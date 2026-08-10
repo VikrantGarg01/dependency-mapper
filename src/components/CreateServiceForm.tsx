@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createService } from '@/app/actions'
 import { toast } from 'react-hot-toast'
+import { createPortal } from 'react-dom' // <-- THE MAGIC FIX
 
 export default function CreateServiceForm({ projectId }: { projectId: string }) {
   const [isOpen, setIsOpen] = useState(false)
@@ -38,7 +39,8 @@ export default function CreateServiceForm({ projectId }: { projectId: string }) 
     )
   }
 
-  return (
+  // THIS IS THE FIX: We use createPortal to render outside the header's CSS cage
+  return createPortal(
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4">
       <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl w-full max-w-md shadow-2xl border border-gray-200 dark:border-gray-700 relative">
         <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Add New Service</h2>
@@ -47,54 +49,30 @@ export default function CreateServiceForm({ projectId }: { projectId: string }) 
           
           <div>
             <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">Service Name</label>
-            <input 
-              name="name" 
-              required 
-              placeholder="e.g., Payment Service" 
-              className="w-full border border-gray-300 dark:border-gray-600 rounded-xl p-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-            />
+            <input name="name" required placeholder="e.g., Payment Service" className="w-full border border-gray-300 dark:border-gray-600 rounded-xl p-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" />
           </div>
 
           <div>
             <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">Description</label>
-            <textarea 
-              name="description" 
-              rows={3}
-              placeholder="What does this service do?"
-              className="w-full border border-gray-300 dark:border-gray-600 rounded-xl p-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none transition"
-            />
+            <textarea name="description" rows={3} placeholder="What does this service do?" className="w-full border border-gray-300 dark:border-gray-600 rounded-xl p-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none transition" />
           </div>
           
           <div>
             <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">Status</label>
-            <select 
-              name="status" 
-              defaultValue="healthy" 
-              className="w-full border border-gray-300 dark:border-gray-600 rounded-xl p-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-            >
+            <select name="status" defaultValue="healthy" className="w-full border border-gray-300 dark:border-gray-600 rounded-xl p-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
               <option value="healthy">🟢 Healthy</option>
-              <option value="degraded">🟡 Degraded</option>
+              <option value="degraded"> Degraded</option>
               <option value="down">🔴 Down</option>
             </select>
           </div>
 
           <div className="flex justify-end gap-3 pt-6">
-            <button 
-              type="button" 
-              onClick={() => setIsOpen(false)} 
-              className="px-6 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition font-medium"
-            >
-              Cancel
-            </button>
-            <button 
-              type="submit" 
-              className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-cyan-700 transition shadow-lg"
-            >
-              Add Service
-            </button>
+            <button type="button" onClick={() => setIsOpen(false)} className="px-6 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition font-medium">Cancel</button>
+            <button type="submit" className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-cyan-700 transition shadow-lg">Add Service</button>
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body // <-- Renders directly to the body tag
   )
 }

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createDependency } from '@/app/actions'
 import toast from 'react-hot-toast'
+import { createPortal } from 'react-dom' // <-- THE MAGIC FIX
 
 export default function CreateDependencyForm({ 
   projectId, 
@@ -21,14 +22,10 @@ export default function CreateDependencyForm({
     
     try {
       const result = await createDependency(formData)
-      
-      // Check if the action returned an error object
       if (result?.error) {
         toast.error(result.error)
         return
       }
-      
-      // If no error, it was successful!
       toast.success('Dependency created!')
       setIsOpen(false)
       router.refresh()
@@ -52,7 +49,8 @@ export default function CreateDependencyForm({
     )
   }
 
-  return (
+  // THIS IS THE FIX: We use createPortal to render outside the header's CSS cage
+  return createPortal(
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4">
       <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl w-full max-w-md shadow-2xl border border-gray-200 dark:border-gray-700 relative">
         <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Add Dependency</h2>
@@ -84,22 +82,12 @@ export default function CreateDependencyForm({
           </div>
 
           <div className="flex justify-end gap-3 pt-6">
-            <button 
-              type="button" 
-              onClick={() => setIsOpen(false)} 
-              className="px-6 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition font-medium"
-            >
-              Cancel
-            </button>
-            <button 
-              type="submit" 
-              className="px-6 py-2.5 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-semibold rounded-xl hover:from-green-700 hover:to-emerald-700 transition shadow-lg"
-            >
-              Add
-            </button>
+            <button type="button" onClick={() => setIsOpen(false)} className="px-6 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition font-medium">Cancel</button>
+            <button type="submit" className="px-6 py-2.5 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-semibold rounded-xl hover:from-green-700 hover:to-emerald-700 transition shadow-lg">Add</button>
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body // <-- Renders directly to the body tag
   )
 }
