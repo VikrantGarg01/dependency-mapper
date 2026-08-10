@@ -17,7 +17,6 @@ import {
   type Edge,
   EdgeLabelRenderer,
   getBezierPath,
-  type NodeProps,
 } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
 import { deleteService, updateServiceStatus, deleteDependency } from '@/app/actions'
@@ -60,7 +59,8 @@ function getBlastRadius(startNodeId: string, edges: Edge[]): Set<string> {
 }
 
 // ========== PROFESSIONAL CUSTOM NODE ==========
-function CustomNode({ data, id }: NodeProps) {
+// Using 'any' here prevents TypeScript from flagging dynamic React Flow data as 'unknown'
+function CustomNode({ data, id }: any) {
   const [showMenu, setShowMenu] = useState(false)
   const hideTimeout = useRef<NodeJS.Timeout | null>(null)
 
@@ -183,6 +183,7 @@ function CustomNode({ data, id }: NodeProps) {
 }
 
 // ========== PROFESSIONAL CUSTOM EDGE ==========
+// Using 'any' here prevents TypeScript from flagging dynamic React Flow data as 'unknown'
 function CustomEdge({
   id,
   sourceX,
