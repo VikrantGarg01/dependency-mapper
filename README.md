@@ -1,36 +1,183 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Dependency Mapper
 
-## Getting Started
+[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen)](https://dependency-mapper-git-main-vikrantgarg01s-projects.vercel.app)
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)](https://www.typescriptlang.org/)
 
-First, run the development server:
+**Visualize your microservice architecture and understand your blast radius.** A modern, interactive dependency mapping tool that helps you map, visualize, and analyze microservice dependencies in real-time.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+##  Features
+
+- 🎯 **Interactive Visual Mapping** - Drag-and-drop interface to create and organize your services
+- 💥 **Blast Radius Analysis** - Instantly see what breaks when any service goes down
+-  **Beautiful UI** - Modern glass-morphism design with dark mode support
+- 📊 **Real-time Statistics** - Track total services, dependencies, and hard/soft connections
+- 🔐 **Secure Authentication** - Powered by Clerk with Google OAuth support
+- 💾 **Persistent Storage** - MySQL database with Prisma ORM
+-  **Export as PNG** - Save and share your architecture diagrams
+- 🎪 **Status Simulation** - Test failure scenarios without affecting production
+-  **Dark Mode** - Easy on the eyes, day or night
+
+## 🛠️ Tech Stack
+
+### Frontend
+- **Next.js 16** - React framework with App Router
+- **TypeScript** - Type-safe development
+- **Tailwind CSS** - Utility-first styling
+- **React Flow** - Interactive node-based graphs
+- **next-themes** - Dark mode implementation
+
+### Backend
+- **Next.js API Routes** - Serverless functions
+- **Prisma** - Type-safe ORM
+- **MySQL (TiDB Cloud)** - Serverless database
+
+### Authentication & Deployment
+- **Clerk** - User authentication & management
+- **Vercel** - Hosting & CI/CD
+
+##  Getting Started
+
+### Prerequisites
+
+- Node.js 18+ and npm
+- A [Clerk](https://clerk.com) account (free)
+- A [TiDB Cloud](https://tidb.cloud) or MySQL database
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/VikrantGarg01/dependency-mapper.git
+   cd dependency-mapper
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables**
+   
+   Create a `.env.local` file in the root directory:
+   ```env
+   # Clerk Authentication Keys
+   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_publishable_key
+   CLERK_SECRET_KEY=your_secret_key
+   
+   # Clerk URLs
+   NEXT_PUBLIC_CLERK_SIGN_IN_URL=/signin
+   NEXT_PUBLIC_CLERK_SIGN_UP_URL=/signup
+   NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL=/dashboard
+   NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL=/dashboard
+   
+   # Database Connection
+   DATABASE_URL="mysql://user:password@host:port/database?sslaccept=strict"
+   ```
+
+4. **Initialize the database**
+   ```bash
+   npx prisma generate
+   npx prisma db push
+   ```
+
+5. **Run the development server**
+   ```bash
+   npm run dev
+   ```
+
+6. **Open [http://localhost:3000](http://localhost:3000)** in your browser
+
+## 📖 How to Use
+
+1. **Create a Project** - Click "+ New Project" to start mapping your architecture
+2. **Add Services** - Use the "+ Add Service" button to create microservices
+3. **Create Dependencies** - Click "+ Add Dependency" to connect services
+   - **Hard Dependencies** (Sync) - Critical connections that will break if the target fails
+   - **Soft Dependencies** (Async) - Non-critical connections (queues, events)
+4. **Analyze Blast Radius** - Click on any service to see what downstream services would be affected
+5. **Simulate Failures** - Use the status indicators (🟢🟡) to test failure scenarios
+6. **Export** - Download your diagram as a PNG image
+
+##  Key Concepts
+
+### Blast Radius
+The blast radius shows all downstream services that would be affected if a particular service fails. This helps you:
+- Identify single points of failure
+- Plan for redundancy
+- Understand system resilience
+- Prioritize monitoring and alerts
+
+### Dependency Types
+- **Hard (Sync)**: Synchronous dependencies (API calls, direct database queries). If the target service goes down, the source service **will fail**.
+- **Soft (Async)**: Asynchronous dependencies (message queues, event streams). If the target goes down, the source can **continue operating** (possibly with degraded functionality).
+
+##  Project Structure
+
+```
+dependency-mapper/
+├── src/
+│   ├── app/                    # Next.js App Router
+│   │   ├── (auth)/            # Authentication pages
+│   │   ├── dashboard/         # Dashboard & project pages
+│   │   ├── globals.css        # Global styles
+│   │   ├── layout.tsx         # Root layout
+│   │   └── page.tsx           # Landing page
+│   ├── components/            # Reusable React components
+│   │   ├── DependencyGraph.tsx
+│   │   ├── CreateServiceForm.tsx
+│   │   ├── CreateDependencyForm.tsx
+│   │   ├── ThemeToggle.tsx
+│   │   └── ExportButton.tsx
+│   ├── lib/
+│   │   └── prisma.ts          # Prisma client instance
+│   └── actions.ts             # Server actions
+├── prisma/
+│   └── schema.prisma          # Database schema
+├── public/                    # Static assets
+├── .env.local                 # Environment variables
+├── next.config.ts             # Next.js configuration
+├── tailwind.config.ts         # Tailwind CSS config
+└── package.json
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🌐 Live Demo
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Visit our live demo: **[Dependency Mapper](https://dependency-mapper-git-main-vikrantgarg01s-projects.vercel.app)**
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🤝 Contributing
 
-## Learn More
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-To learn more about Next.js, take a look at the following resources:
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📝 License
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+This project is open source and available under the [MIT License](LICENSE).
 
-## Deploy on Vercel
+## 👨💻 Author
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+**Vikrant Garg**
+- GitHub: [@VikrantGarg01](https://github.com/VikrantGarg01)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🙏 Acknowledgments
+
+- [Next.js](https://nextjs.org/) - The React Framework
+- [Clerk](https://clerk.com/) - Authentication made easy
+- [React Flow](https://reactflow.dev/) - Node-based graph library
+- [Prisma](https://prisma.io/) - Next-generation ORM
+- [Tailwind CSS](https://tailwindcss.com/) - Rapid UI development
+
+---
+
+<div align="center">
+
+**Made with ❤️ by Vikrant Garg**
+
+[⭐ Star this repo](https://github.com/VikrantGarg01/dependency-mapper) if you find it useful!
+
+</div>
