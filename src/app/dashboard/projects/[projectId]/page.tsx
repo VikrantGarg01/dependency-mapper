@@ -6,7 +6,7 @@ import CreateServiceForm from '@/components/CreateServiceForm'
 import CreateDependencyForm from '@/components/CreateDependencyForm'
 import ExportButton from '@/components/ExportButton'
 import ProjectGraphWrapper from '@/components/ProjectGraphWrapper'
-import { ThemeToggle } from '@/components/ThemeToggle' // <-- Added ThemeToggle
+import { ThemeToggle } from '@/components/ThemeToggle'
 
 export default async function ProjectPage({ params }: { params: Promise<{ projectId: string }> }) {
   const { userId } = await auth()
@@ -67,9 +67,9 @@ export default async function ProjectPage({ params }: { params: Promise<{ projec
               </div>
             </div>
 
-            {/* Action Buttons */}
+            {/* Action Buttons (Forms removed from here to prevent CSS trapping) */}
             <div className="flex flex-wrap items-center gap-3">
-              <ThemeToggle /> {/* <-- Added Theme Toggle Button */}
+              <ThemeToggle /> 
               
               <button className="group px-5 py-2.5 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 flex items-center gap-2">
                 <svg className="w-5 h-5 group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -77,9 +77,6 @@ export default async function ProjectPage({ params }: { params: Promise<{ projec
                 </svg>
                 <ExportButton projectId={project.id} />
               </button>
-              
-              <CreateDependencyForm projectId={project.id} services={project.services as any} />
-              <CreateServiceForm projectId={project.id} />
               
               <div className="h-8 w-px bg-gray-300 dark:bg-gray-700 mx-2 hidden sm:block"></div>
               
@@ -162,6 +159,11 @@ export default async function ProjectPage({ params }: { params: Promise<{ projec
           </div>
         </div>
       </main>
+
+      {/* Forms placed at the root level so they aren't trapped by the header's backdrop-blur */}
+      <CreateDependencyForm projectId={project.id} services={project.services as any} />
+      <CreateServiceForm projectId={project.id} />
+
     </div>
   )
 }
