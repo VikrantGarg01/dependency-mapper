@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createService } from '@/app/actions'
 import { toast } from 'react-hot-toast'
-import { createPortal } from 'react-dom' // <-- THE MAGIC FIX
+import { createPortal } from 'react-dom'
 
 export default function CreateServiceForm({ projectId }: { projectId: string }) {
   const [isOpen, setIsOpen] = useState(false)
@@ -15,10 +15,16 @@ export default function CreateServiceForm({ projectId }: { projectId: string }) 
     const formData = new FormData(e.currentTarget)
     
     try {
-      await createService(formData)
+      const result = await createService(formData)
+      
+      if (result?.error) {
+        toast.error(result.error)
+        return // STOP HERE if there's an error, do NOT refresh
+      }
+      
       toast.success('Service added successfully!')
       setIsOpen(false)
-      router.refresh()
+      router.refresh() // THIS WILL NOW ALWAYS RUN ON SUCCESS
     } catch (error) {
       console.error('Unexpected service creation error:', error)
       toast.error('An unexpected error occurred')
@@ -39,7 +45,6 @@ export default function CreateServiceForm({ projectId }: { projectId: string }) 
     )
   }
 
-  // THIS IS THE FIX: We use createPortal to render outside the header's CSS cage
   return createPortal(
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4">
       <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl w-full max-w-md shadow-2xl border border-gray-200 dark:border-gray-700 relative">
@@ -61,7 +66,7 @@ export default function CreateServiceForm({ projectId }: { projectId: string }) 
             <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">Status</label>
             <select name="status" defaultValue="healthy" className="w-full border border-gray-300 dark:border-gray-600 rounded-xl p-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
               <option value="healthy">🟢 Healthy</option>
-              <option value="degraded"> Degraded</option>
+              <option value="degraded">🟡 Degraded</option>
               <option value="down">🔴 Down</option>
             </select>
           </div>
@@ -73,6 +78,6 @@ export default function CreateServiceForm({ projectId }: { projectId: string }) 
         </form>
       </div>
     </div>,
-    document.body // <-- Renders directly to the body tag
+    document.body
   )
 }
