@@ -54,42 +54,42 @@ if (!isOpen) {
 }
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded-lg w-full max-w-md">
-        <h2 className="text-xl font-bold mb-4">Add Dependency</h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input type="hidden" name="projectId" value={projectId} />
-          
-          <div>
-            <label className="block text-sm font-medium mb-1">Source Service (Calls)</label>
-            <select name="sourceServiceId" required className="w-full border rounded p-2">
-              <option value="">Select source...</option>
-              {services.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
-            </select>
-          </div>
+  <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+    <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl w-full max-w-md shadow-2xl border border-gray-200 dark:border-gray-700">
+      <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Add Dependency</h2>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <input type="hidden" name="projectId" value={projectId} />
+        
+        <div>
+          <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">Source Service (Calls)</label>
+          <select name="sourceServiceId" required className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-2.5 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            <option value="">Select source...</option>
+            {services.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+          </select>
+        </div>
 
-          <div>
-            <label className="block text-sm font-medium mb-1">Target Service (Is called by)</label>
-            <select name="targetServiceId" required className="w-full border rounded p-2">
-              <option value="">Select target...</option>
-              {services.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
-            </select>
-          </div>
+        <div>
+          <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">Target Service (Is called by)</label>
+          <select name="targetServiceId" required className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-2.5 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            <option value="">Select target...</option>
+            {services.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+          </select>
+        </div>
 
-          <div>
-            <label className="block text-sm font-medium mb-1">Type</label>
-            <select name="dependencyType" className="w-full border rounded p-2">
-              <option value="hard">Hard (Sync)</option>
-              <option value="soft">Soft (Async/Queue)</option>
-            </select>
-          </div>
+        <div>
+          <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">Type</label>
+          <select name="dependencyType" className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-2.5 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            <option value="hard">Hard (Sync)</option>
+            <option value="soft">Soft (Async/Queue)</option>
+          </select>
+        </div>
 
-          <div className="flex justify-end gap-2">
-            <button type="button" onClick={() => setIsOpen(false)} className="px-4 py-2 border rounded">Cancel</button>
-            <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded">Add</button>
-          </div>
-        </form>
-      </div>
+        <div className="flex justify-end gap-3 pt-4">
+          <button type="button" onClick={() => setIsOpen(false)} className="px-5 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition">Cancel</button>
+          <button type="submit" className="px-5 py-2.5 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-semibold rounded-lg hover:from-green-700 hover:to-emerald-700 transition shadow-lg">Add</button>
+        </div>
+      </form>
     </div>
-  )
+  </div>
+)
 }
