@@ -16,19 +16,26 @@ export default function CreateDependencyForm({
   const [isOpen, setIsOpen] = useState(false)
   const router = useRouter()
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     const formData = new FormData(e.currentTarget)
     
     try {
       const result = await createDependency(formData)
+      
       if (result?.error) {
         toast.error(result.error)
         return
       }
+      
       toast.success('Dependency created!')
       setIsOpen(false)
-      router.refresh()
+      
+      // Force a full page reload to ensure fresh data
+      setTimeout(() => {
+        window.location.reload()
+      }, 300)
+      
     } catch (error) {
       console.error('Unexpected dependency creation error:', error)
       toast.error('An unexpected error occurred')

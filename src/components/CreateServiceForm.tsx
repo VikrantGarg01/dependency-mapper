@@ -10,7 +10,7 @@ export default function CreateServiceForm({ projectId }: { projectId: string }) 
   const [isOpen, setIsOpen] = useState(false)
   const router = useRouter()
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     const formData = new FormData(e.currentTarget)
     
@@ -19,12 +19,17 @@ export default function CreateServiceForm({ projectId }: { projectId: string }) 
       
       if (result?.error) {
         toast.error(result.error)
-        return // STOP HERE if there's an error, do NOT refresh
+        return
       }
       
       toast.success('Service added successfully!')
       setIsOpen(false)
-      router.refresh() // THIS WILL NOW ALWAYS RUN ON SUCCESS
+      
+      // Force a full page reload to ensure fresh data
+      setTimeout(() => {
+        window.location.reload()
+      }, 300)
+      
     } catch (error) {
       console.error('Unexpected service creation error:', error)
       toast.error('An unexpected error occurred')
