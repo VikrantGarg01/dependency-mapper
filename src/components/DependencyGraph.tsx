@@ -4,6 +4,7 @@ import { useCallback, useMemo, useState, useRef } from 'react'
 import {
   ReactFlow,
   Background,
+  BackgroundVariant,
   Controls,
   MiniMap,
   useNodesState,
@@ -16,6 +17,7 @@ import {
   type Edge,
   EdgeLabelRenderer,
   getBezierPath,
+  type NodeProps,
 } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
 import { deleteService, updateServiceStatus, deleteDependency } from '@/app/actions'
@@ -58,7 +60,7 @@ function getBlastRadius(startNodeId: string, edges: Edge[]): Set<string> {
 }
 
 // ========== PROFESSIONAL CUSTOM NODE ==========
-function CustomNode({ data, id }: any) {
+function CustomNode({ data, id }: NodeProps) {
   const [showMenu, setShowMenu] = useState(false)
   const hideTimeout = useRef<NodeJS.Timeout | null>(null)
 
@@ -88,7 +90,6 @@ function CustomNode({ data, id }: any) {
     window.location.reload()
   }
 
-  // Determine colors based on status
   let statusColor = 'bg-green-500'
   let borderColor = 'border-l-green-500'
   let bgColor = 'bg-white dark:bg-gray-900'
@@ -124,7 +125,6 @@ function CustomNode({ data, id }: any) {
       />
       
       <div className={`${bgColor} border border-gray-200 dark:border-gray-700 border-l-4 ${borderColor} rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 min-w-[200px] p-4`}>
-        {/* Header with Status */}
         <div className="flex items-center gap-3 mb-2">
           <div className={`w-2.5 h-2.5 rounded-full ${statusColor} shadow-sm`}></div>
           <h3 className="font-semibold text-sm text-gray-900 dark:text-white truncate flex-1">
@@ -132,14 +132,12 @@ function CustomNode({ data, id }: any) {
           </h3>
         </div>
 
-        {/* Description */}
         {data.description && (
           <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2 leading-relaxed mb-2">
             {data.description}
           </p>
         )}
 
-        {/* Footer */}
         <div className="mt-3 pt-2 border-t border-gray-100 dark:border-gray-800 flex justify-between items-center">
           <span className="text-[10px] font-medium text-gray-400 uppercase tracking-wider">
             {data.serviceType || 'Service'}
@@ -157,7 +155,6 @@ function CustomNode({ data, id }: any) {
         className="!bg-gray-400 !w-3 !h-3 !border-2 !border-white dark:!border-gray-900" 
       />
 
-      {/* Delete Button */}
       {!data.simulationMode && (
         <button
           onClick={handleDelete}
@@ -168,34 +165,14 @@ function CustomNode({ data, id }: any) {
         </button>
       )}
 
-      {/* Status Menu */}
       {showMenu && !data.simulationMode && (
         <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl p-1 z-20 flex gap-1">
-          <button 
-            onClick={() => handleStatusChange('healthy')}
-            className="px-2 py-1 text-xs rounded hover:bg-green-50 dark:hover:bg-green-900/30"
-            title="Set Healthy"
-          >
-            🟢
-          </button>
-          <button 
-            onClick={() => handleStatusChange('degraded')}
-            className="px-2 py-1 text-xs rounded hover:bg-yellow-50 dark:hover:bg-yellow-900/30"
-            title="Set Degraded"
-          >
-            🟡
-          </button>
-          <button 
-            onClick={() => handleStatusChange('down')}
-            className="px-2 py-1 text-xs rounded hover:bg-red-50 dark:hover:bg-red-900/30"
-            title="Set Down"
-          >
-            🔴
-          </button>
+          <button onClick={() => handleStatusChange('healthy')} className="px-2 py-1 text-xs rounded hover:bg-green-50 dark:hover:bg-green-900/30" title="Set Healthy">🟢</button>
+          <button onClick={() => handleStatusChange('degraded')} className="px-2 py-1 text-xs rounded hover:bg-yellow-50 dark:hover:bg-yellow-900/30" title="Set Degraded">🟡</button>
+          <button onClick={() => handleStatusChange('down')} className="px-2 py-1 text-xs rounded hover:bg-red-50 dark:hover:bg-red-900/30" title="Set Down">🔴</button>
         </div>
       )}
 
-      {/* Simulation Mode Indicator */}
       {data.simulationMode && data.isSelected && (
         <div className="absolute -top-3 -left-3 bg-red-600 text-white rounded-full w-8 h-8 flex items-center justify-center animate-pulse shadow-lg">
           💥
@@ -286,13 +263,8 @@ export default function DependencyGraph({
   onNodeSelect: (id: string | null) => void
   simulationMode: boolean
 }) {
-  const nodeTypes = useMemo(() => ({
-    custom: CustomNode
-  }), [])
-
-  const edgeTypes = useMemo(() => ({
-    custom: CustomEdge
-  }), [])
+  const nodeTypes = useMemo(() => ({ custom: CustomNode }), [])
+  const edgeTypes = useMemo(() => ({ custom: CustomEdge }), [])
 
   const initialNodes: Node[] = useMemo(() => 
     services.map((s, i) => ({
@@ -320,14 +292,8 @@ export default function DependencyGraph({
       source: d.sourceServiceId,
       target: d.targetServiceId,
       type: 'custom',
-      data: { 
-        type: d.dependencyType,
-        dbId: d.id 
-      },
-      markerEnd: { 
-        type: 'arrowclosed', 
-        color: d.dependencyType === 'hard' ? '#ef4444' : '#3b82f6' 
-      },
+      data: { type: d.dependencyType, dbId: d.id },
+      markerEnd: { type: 'arrowclosed', color: d.dependencyType === 'hard' ? '#ef4444' : '#3b82f6' },
     })),
     [dependencies]
   )
@@ -412,7 +378,7 @@ export default function DependencyGraph({
         className="bg-transparent"
       >
         <Background 
-          variant="dots" 
+          variant={BackgroundVariant.Dots} 
           gap={20} 
           size={1} 
           color="#9ca3af" 
